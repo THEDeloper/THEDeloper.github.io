@@ -89,16 +89,28 @@
       box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     }
 
-    /* ESTILOS PARA EL VIDEO CON DESVANECIMIENTO */
+    /* EFECTO DE ACERCAMIENTO (KEN BURNS) PARA LA IMAGEN */
     .card-img { height: 260px; overflow: hidden; position: relative; background: #000; }
-    .card-img img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.8s ease; z-index: 2; position: relative; }
+    
+    .card-img img { 
+      width: 100%; height: 100%; object-fit: cover; 
+      transition: opacity 0.8s ease; z-index: 2; position: relative;
+      animation: zoomInInfinite 10s infinite alternate linear;
+    }
+
+    @keyframes zoomInInfinite {
+      from { transform: scale(1); }
+      to { transform: scale(1.2); }
+    }
+
     .card-video {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       object-fit: cover; opacity: 0; transition: opacity 0.8s ease; z-index: 1;
     }
 
+    /* Cuando se activa el video */
     .card.playing .card-img img { opacity: 0; }
-    .card.playing .card-video { opacity: 1; }
+    .card.playing .card-video { opacity: 1; z-index: 3; }
 
     .card-body { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
     .card-body h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 12px; }
@@ -167,16 +179,15 @@
 <script>
   let currentLang = 'en';
 
-  // TODAS TUS ACTIVIDADES RESTAURADAS CON CAMPO VIDEO
   const data = [
-    { id: 1, en: { title: "The Living Gardens", desc: "Botanical garden with lush greenery.", cat: "Nature" }, es: { title: "Jardines Vivientes", desc: "Jardín botánico con vegetación exuberante.", cat: "Naturaleza" }, img: "https://scontent.frtb1-1.fna.fbcdn.net/v/t39.30808-6/480662604_599906746241411_3391525775134432775_n.jpg?stp=cp6_dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=MMzqw__5vG4Q7kNvwEb1Wwz&_nc_oc=AdlNM0mR2uZGDdt4DtqZcqUY_it-7-WRp1IyVw43RffhZF0DwvrYvBLn0_jEdoJ-7dw&_nc_zt=23&_nc_ht=scontent.frtb1-1.fna&_nc_gid=sRxPcKvHiOHZsDsd97yBSw&oh=00_AfmyL7YMyty3M2tWWevbLGKvfxtYVkw-zqLLIFVm1z_1Mg&oe=695606A5", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 2, en: { title: "Glass Bottom Boat", desc: "1 hour boat ride with a glass bottom.", cat: "Marine" }, es: { title: "Bote Fondo de Vidrio", desc: "Paseo de 1 hora con fondo de vidrio.", cat: "Marino" }, img: "https://res.cloudinary.com/dlbprejpi/image/upload/f_auto,q_auto,c_limit,w_auto,dpr_auto/v1726082151/hyde_tours_glass_bottom_boat_internal_4_min_e490e0bc96.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 3, en: { title: "Snuba Adventure", desc: "A hybrid activity between diving and snorkeling.", cat: "Adventure" }, es: { title: "Aventura Snuba", desc: "Actividad híbrida entre buceo y snorkel.", cat: "Aventura" }, img: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/11/f8/48/3d.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 4, en: { title: "Night Snorkeling", desc: "1.5 hours of nocturnal underwater exploration.", cat: "Exclusive" }, es: { title: "Snorkel Nocturno", desc: "1 hora y media de exploración nocturna.", cat: "Exclusivo" }, img: "https://img1.wsimg.com/isteam/ip/986df51f-d3e4-4863-8250-a554a02142c8/ols/roatan4-facebookJumbo.jpeg/:/rs=w:1200,h:1200", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 5, en: { title: "Sunset Catamaran", desc: "All Inclusive: Open bar, snacks, and snorkeling.", cat: "Luxury" }, es: { title: "Catamarán al Atardecer", desc: "Todo Incluido: Open bar, snacks y snorkel.", cat: "Lujo" }, img: "https://www.detourroatan.com/wp-content/uploads/2018/02/DEF0AEC4-1BB1-4990-9635-CF5DEEF02909.png", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 7, en: { title: "Deep Sea Fishing", desc: "Fishing on the 'Oso Goloso' boat.", cat: "Sport" }, es: { title: "Pesca de Altura", desc: "Pesca en el bote 'Oso Goloso'.", cat: "Deporte" }, img: "https://www.world-tourism.org/wp-content/uploads/2025/08/kona-hawaii-deep-sea-fishing-experience-on-the-bite-me-4.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 8, en: { title: "Dolphin Encounter", desc: "Interact with dolphins.", cat: "Wildlife" }, es: { title: "Encuentro Delfines", desc: "Interactúa con delfines.", cat: "Vida Silvestre" }, img: "https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 9, en: { title: "Zipline / Canopy", desc: "Fly over the jungle.", cat: "Adventure" }, es: { title: "Zipline / Canopy", desc: "Vuela sobre la selva.", cat: "Aventura" }, img: "https://res.cloudinary.com/hfyvkoyi1/image/upload/c_fill,g_custom,h_1280/f_auto/c_fill,g_custom,h_1280/f_auto/v1643001792/ranrvd5dwkm05dhf4k5h.jpg", video: "TU_VIDEO_AQUI.mp4" },
+    { id: 1, en: { title: "The Living Gardens", desc: "Botanical garden with lush greenery.", cat: "Nature" }, es: { title: "Jardines Vivientes", desc: "Jardín botánico con vegetación exuberante.", cat: "Naturaleza" }, img: "https://scontent.frtb1-1.fna.fbcdn.net/v/t39.30808-6/480662604_599906746241411_3391525775134432775_n.jpg?stp=cp6_dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=MMzqw__5vG4Q7kNvwEb1Wwz&_nc_oc=AdlNM0mR2uZGDdt4DtqZcqUY_it-7-WRp1IyVw43RffhZF0DwvrYvBLn0_jEdoJ-7dw&_nc_zt=23&_nc_ht=scontent.frtb1-1.fna&_nc_gid=sRxPcKvHiOHZsDsd97yBSw&oh=00_AfmyL7YMyty3M2tWWevbLGKvfxtYVkw-zqLLIFVm1z_1Mg&oe=695606A5", video: "The Living Gardens.mp4" },
+    { id: 2, en: { title: "Glass Bottom Boat", desc: "1 hour boat ride with a glass bottom.", cat: "Marine" }, es: { title: "Bote Fondo de Vidrio", desc: "Paseo de 1 hora con fondo de vidrio.", cat: "Marino" }, img: "https://res.cloudinary.com/dlbprejpi/image/upload/f_auto,q_auto,c_limit,w_auto,dpr_auto/v1726082151/hyde_tours_glass_bottom_boat_internal_4_min_e490e0bc96.jpg", video: "Glass Bottom Boat.mp4" },
+    { id: 3, en: { title: "Snuba Adventure", desc: "A hybrid activity between diving and snorkeling.", cat: "Adventure" }, es: { title: "Aventura Snuba", desc: "Actividad híbrida entre buceo y snorkel.", cat: "Aventura" }, img: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/11/f8/48/3d.jpg", video: "Snuba Adventure.mp4" },
+    { id: 4, en: { title: "Night Snorkeling", desc: "1.5 hours of nocturnal underwater exploration.", cat: "Exclusive" }, es: { title: "Snorkel Nocturno", desc: "1 hora y media de exploración nocturna.", cat: "Exclusivo" }, img: "https://img1.wsimg.com/isteam/ip/986df51f-d3e4-4863-8250-a554a02142c8/ols/roatan4-facebookJumbo.jpeg/:/rs=w:1200,h:1200", video: "Night Snorkeling.mp4" },
+    { id: 5, en: { title: "Sunset Catamaran", desc: "All Inclusive: Open bar, snacks, and snorkeling.", cat: "Luxury" }, es: { title: "Catamarán al Atardecer", desc: "Todo Incluido: Open bar, snacks y snorkel.", cat: "Lujo" }, img: "https://www.detourroatan.com/wp-content/uploads/2018/02/DEF0AEC4-1BB1-4990-9635-CF5DEEF02909.png", video: "CATAMARAN.mp4" },
+    { id: 7, en: { title: "Deep Sea Fishing", desc: "Fishing on the 'Oso Goloso' boat.", cat: "Sport" }, es: { title: "Pesca de Altura", desc: "Pesca en el bote 'Oso Goloso'.", cat: "Deporte" }, img: "https://www.world-tourism.org/wp-content/uploads/2025/08/kona-hawaii-deep-sea-fishing-experience-on-the-bite-me-4.jpg", video: "Deep Sea Fishing.mp4" },
+    { id: 8, en: { title: "Dolphin Encounter", desc: "Interact with dolphins.", cat: "Wildlife" }, es: { title: "Encuentro Delfines", desc: "Interactúa con delfines.", cat: "Vida Silvestre" }, img: "https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80", video: "Dolphin Encounter.mp4" },
+    { id: 9, en: { title: "Zipline / Canopy", desc: "Fly over the jungle.", cat: "Adventure" }, es: { title: "Zipline / Canopy", desc: "Vuela sobre la selva.", cat: "Aventura" }, img: "https://res.cloudinary.com/hfyvkoyi1/image/upload/c_fill,g_custom,h_1280/f_auto/c_fill,g_custom,h_1280/f_auto/v1643001792/ranrvd5dwkm05dhf4k5h.jpg", video: "https://youtu.be/86S5cepM5tY?si=0B89zycyj9yoLr4v" },
     { id: 10, en: { title: "Banana Boat", desc: "Group fun on the water.", cat: "Family" }, es: { title: "Banana Boat", desc: "Diversión grupal en el agua.", cat: "Familia" }, img: "https://tse2.mm.bing.net/th/id/OIP.pVMi_jlUaTHtiNcxf2y9QAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
     { id: 11, en: { title: "Little French Key", desc: "Transport, day pass and animal park.", cat: "VIP" }, es: { title: "Little French Key", desc: "Transporte, day pass y parque de animales.", cat: "VIP" }, img: "https://tse2.mm.bing.net/th/id/OIP.NVP2ISrzM1BHgrvtECA5rAHaEK?rs=1&amp;pid=ImgDetMain&amp;o=7&amp;rm=3", video: "TU_VIDEO_AQUI.mp4" },
     { id: 12, en: { title: "Snorkeling Tour", desc: "Exploring the best reef spots.", cat: "Marine" }, es: { title: "Tour de Snorkel", desc: "Explorando los mejores puntos del arrecife.", cat: "Marino" }, img: "https://th.bing.com/th/id/R.3c0b63b6928dbdc2675f969d7645de41?rik=RLwKHynq1jXDjg&riu=http%3a%2f%2fwww.shoreexcursionsgroup.com%2fimg%2ftour%2fCAROSUBSNOKAY-2.jpg&ehk=pewPa0rgE8kgQSl1D2CbGYynnbm5ilId087klen7ZTE%3d&risl=&pid=ImgRaw&r=0", video: "TU_VIDEO_AQUI.mp4" },
@@ -212,11 +223,10 @@
       const card = document.createElement('div');
       card.className = 'card';
       
-      // Control de video: DESKTOP + MOBILE
+      // Control de video al pasar el mouse o tocar en móvil
       card.onmouseenter = () => playVideo(card);
       card.onmouseleave = () => stopVideo(card);
       card.ontouchstart = () => playVideo(card);
-      card.ontouchend = () => stopVideo(card);
 
       card.innerHTML = `
         <div class="card-img">
@@ -246,7 +256,7 @@
     const video = card.querySelector('.card-video');
     if(video) {
         card.classList.add('playing');
-        video.play().catch(e => console.log("Audio requiere click previo"));
+        video.play().catch(e => console.log("Se requiere interacción para audio"));
     }
   }
 
@@ -262,7 +272,7 @@
   function setLang(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    if(event) event.target.classList.add('active');
+    if(window.event) window.event.target.classList.add('active');
     document.getElementById('hero-title').innerHTML = translations[lang].hero;
     document.getElementById('sec-badge').innerText = translations[lang].secBadge;
     document.getElementById('sec-title').innerText = translations[lang].secTitle;
