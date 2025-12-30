@@ -26,6 +26,17 @@
       background: radial-gradient(circle at 0% 0%, #0f172a 0%, #020617 100%);
     }
 
+    /* BOTÓN DE AUDIO MAESTRO ADICIONAL */
+    .master-audio {
+      position: fixed; bottom: 110px; left: 30px; z-index: 2000;
+      width: 65px; height: 65px; border-radius: 50%;
+      background: var(--gold); color: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: none; box-shadow: 0 10px 30px rgba(229, 192, 123, 0.4);
+      transition: 0.3s;
+    }
+    .master-audio.muted { background: #4b5563; color: white; }
+
     /* IDIOMA */
     .lang-container {
       position: fixed; top: 25px; right: 25px; z-index: 2000;
@@ -91,7 +102,7 @@
       box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     }
 
-    /* EFECTO FOTO PRESENTACIÓN (KEN BURNS) */
+    /* EFECTO FOTO PRESENTACIÓN */
     .card-img { height: 260px; overflow: hidden; position: relative; background: #000; }
     .card-img img { 
       width: 100%; height: 100%; object-fit: cover; 
@@ -105,7 +116,6 @@
       object-fit: cover; opacity: 0; transition: opacity 0.8s ease; z-index: 1;
     }
 
-    /* ESTADO ACTIVO */
     .card.playing .card-img img { opacity: 0; }
     .card.playing .card-video { opacity: 1; z-index: 3; }
 
@@ -123,7 +133,6 @@
     }
     .btn-wa:hover { background: var(--gold); transform: scale(1.02); }
 
-    /* FLOATING & FOOTER */
     footer { padding: 80px 20px; text-align: center; background: rgba(0,0,0,0.4); margin-top: 100px; }
     .wa-float {
       position: fixed; bottom: 30px; left: 30px;
@@ -139,6 +148,10 @@
   </style>
 </head>
 <body>
+
+<button class="master-audio muted" id="globalAudioBtn" onclick="toggleGlobalAudio()">
+  <i data-lucide="volume-x" id="globalAudioIcon"></i>
+</button>
 
 <div class="lang-container">
   <button class="lang-btn active" onclick="setLang('en', event)">ENGLISH</button>
@@ -172,6 +185,7 @@
 <script>
   let currentLang = 'en';
   let observer;
+  let isGlobalMuted = true;
 
   const data = [
     { id: 1, en: { title: "The Living Gardens", desc: "Botanical garden with lush greenery.", cat: "Nature" }, es: { title: "Jardines Vivientes", desc: "Jardín botánico con vegetación exuberante.", cat: "Naturaleza" }, img: "https://scontent.frtb1-1.fna.fbcdn.net/v/t39.30808-6/480662604_599906746241411_3391525775134432775_n.jpg?stp=cp6_dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=MMzqw__5vG4Q7kNvwEb1Wwz&_nc_oc=AdlNM0mR2uZGDdt4DtqZcqUY_it-7-WRp1IyVw43RffhZF0DwvrYvBLn0_jEdoJ-7dw&_nc_zt=23&_nc_ht=scontent.frtb1-1.fna&_nc_gid=sRxPcKvHiOHZsDsd97yBSw&oh=00_AfmyL7YMyty3M2tWWevbLGKvfxtYVkw-zqLLIFVm1z_1Mg&oe=695606A5", video: "The Living Gardens.mp4" },
@@ -218,7 +232,6 @@
       card.className = 'card';
       card.dataset.id = item.id;
       
-      // En PC funciona con Clic. En móvil el Observer hace el trabajo.
       card.onclick = (e) => {
           if (e.target.closest('.btn-wa')) return;
           toggleVideo(card);
@@ -249,6 +262,22 @@
     setupMobileObserver();
   }
 
+  // --- LÓGICA DE AUDIO MAESTRO ---
+  function toggleGlobalAudio() {
+    isGlobalMuted = !isGlobalMuted;
+    const btn = document.getElementById('globalAudioBtn');
+    const icon = document.getElementById('globalAudioIcon');
+    
+    btn.classList.toggle('muted', isGlobalMuted);
+    icon.setAttribute('data-lucide', isGlobalMuted ? 'volume-x' : 'volume-2');
+    lucide.createIcons();
+
+    // Sincronizar todos los videos que se están reproduciendo
+    document.querySelectorAll('.card-video').forEach(v => {
+      v.muted = isGlobalMuted;
+    });
+  }
+
   // --- LÓGICA DE VIDEO ---
   function toggleVideo(card) {
       const isPlaying = card.classList.contains('playing');
@@ -260,11 +289,8 @@
       const video = card.querySelector('.card-video');
       if(video) {
           card.classList.add('playing');
-          video.muted = false; // Activar sonido al interactuar
-          video.play().catch(() => {
-              video.muted = true; // Fallback si el navegador bloquea audio
-              video.play();
-          });
+          video.muted = isGlobalMuted; // Sigue al botón maestro
+          video.play().catch(() => {});
       }
   }
 
@@ -281,16 +307,11 @@
       document.querySelectorAll('.card').forEach(c => stopVideo(c));
   }
 
-  // --- LÓGICA MÓVIL (TIPO REELS) ---
   function setupMobileObserver() {
       const isMobile = window.innerWidth <= 768;
       if (!isMobile) return;
 
-      const options = {
-          root: null,
-          threshold: 0.7 // El video debe estar al 70% visible para reproducirse
-      };
-
+      const options = { root: null, threshold: 0.7 };
       if (observer) observer.disconnect();
 
       observer = new IntersectionObserver((entries) => {
@@ -306,7 +327,6 @@
       document.querySelectorAll('.card').forEach(card => observer.observe(card));
   }
 
-  // --- OTROS ---
   function setLang(lang, event) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
@@ -329,5 +349,4 @@
   render();
 </script>
 </body>
-</html>
 </html>
