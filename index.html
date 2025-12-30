@@ -26,6 +26,7 @@
       background: radial-gradient(circle at 0% 0%, #0f172a 0%, #020617 100%);
     }
 
+    /* IDIOMA */
     .lang-container {
       position: fixed; top: 25px; right: 25px; z-index: 2000;
       background: rgba(0,0,0,0.5); backdrop-filter: blur(15px);
@@ -39,6 +40,7 @@
     }
     .lang-btn.active { background: var(--gold); color: var(--navy); }
 
+    /* HERO */
     header {
       height: 85vh; display: flex; flex-direction: column; 
       justify-content: center; align-items: center; text-align: center;
@@ -68,8 +70,8 @@
       border: 1px solid var(--gold);
     }
 
+    /* GRID & CARDS */
     .container { max-width: 1400px; margin: auto; padding: 80px 20px; position: relative; z-index: 2; }
-    
     .section-info { margin-bottom: 60px; }
     .section-info h2 { font-family: 'Playfair Display', serif; font-size: 3rem; margin-bottom: 10px; }
     .section-info p { color: var(--gold); font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
@@ -89,26 +91,21 @@
       box-shadow: 0 30px 60px rgba(0,0,0,0.6);
     }
 
-    /* EFECTO DE ACERCAMIENTO (KEN BURNS) PARA LA IMAGEN */
+    /* EFECTO FOTO PRESENTACIÓN (KEN BURNS) */
     .card-img { height: 260px; overflow: hidden; position: relative; background: #000; }
-    
     .card-img img { 
       width: 100%; height: 100%; object-fit: cover; 
       transition: opacity 0.8s ease; z-index: 2; position: relative;
       animation: zoomInInfinite 10s infinite alternate linear;
     }
-
-    @keyframes zoomInInfinite {
-      from { transform: scale(1); }
-      to { transform: scale(1.2); }
-    }
+    @keyframes zoomInInfinite { from { transform: scale(1); } to { transform: scale(1.2); } }
 
     .card-video {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       object-fit: cover; opacity: 0; transition: opacity 0.8s ease; z-index: 1;
     }
 
-    /* Cuando se activa el video */
+    /* ESTADO ACTIVO */
     .card.playing .card-img img { opacity: 0; }
     .card.playing .card-video { opacity: 1; z-index: 3; }
 
@@ -126,17 +123,14 @@
     }
     .btn-wa:hover { background: var(--gold); transform: scale(1.02); }
 
+    /* FLOATING & FOOTER */
     footer { padding: 80px 20px; text-align: center; background: rgba(0,0,0,0.4); margin-top: 100px; }
-    .footer-logo { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 10px; }
-
     .wa-float {
       position: fixed; bottom: 30px; left: 30px;
       width: 65px; height: 65px; background: #25d366;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 10px 30px rgba(37,211,102,0.4); z-index: 1000; color: white;
-      transition: 0.4s;
     }
-    .wa-float:hover { transform: scale(1.1) rotate(10deg); }
 
     @media (max-width: 768px) {
       header h1 { font-size: 4rem; }
@@ -147,8 +141,8 @@
 <body>
 
 <div class="lang-container">
-  <button class="lang-btn active" onclick="setLang('en')">ENGLISH</button>
-  <button class="lang-btn" onclick="setLang('es')">ESPAÑOL</button>
+  <button class="lang-btn active" onclick="setLang('en', event)">ENGLISH</button>
+  <button class="lang-btn" onclick="setLang('es', event)">ESPAÑOL</button>
 </div>
 
 <header>
@@ -163,7 +157,6 @@
     <p id="sec-badge">Full Catalog 2025</p>
     <h2 id="sec-title">Our Activities</h2>
   </div>
-  
   <div class="grid" id="mainGrid"></div>
 </div>
 
@@ -178,6 +171,7 @@
 
 <script>
   let currentLang = 'en';
+  let observer;
 
   const data = [
     { id: 1, en: { title: "The Living Gardens", desc: "Botanical garden with lush greenery.", cat: "Nature" }, es: { title: "Jardines Vivientes", desc: "Jardín botánico con vegetación exuberante.", cat: "Naturaleza" }, img: "https://scontent.frtb1-1.fna.fbcdn.net/v/t39.30808-6/480662604_599906746241411_3391525775134432775_n.jpg?stp=cp6_dst-jpg_s960x960_tt6&_nc_cat=105&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=MMzqw__5vG4Q7kNvwEb1Wwz&_nc_oc=AdlNM0mR2uZGDdt4DtqZcqUY_it-7-WRp1IyVw43RffhZF0DwvrYvBLn0_jEdoJ-7dw&_nc_zt=23&_nc_ht=scontent.frtb1-1.fna&_nc_gid=sRxPcKvHiOHZsDsd97yBSw&oh=00_AfmyL7YMyty3M2tWWevbLGKvfxtYVkw-zqLLIFVm1z_1Mg&oe=695606A5", video: "The Living Gardens.mp4" },
@@ -187,31 +181,31 @@
     { id: 5, en: { title: "Sunset Catamaran", desc: "All Inclusive: Open bar, snacks, and snorkeling.", cat: "Luxury" }, es: { title: "Catamarán al Atardecer", desc: "Todo Incluido: Open bar, snacks y snorkel.", cat: "Lujo" }, img: "https://www.detourroatan.com/wp-content/uploads/2018/02/DEF0AEC4-1BB1-4990-9635-CF5DEEF02909.png", video: "CATAMARAN.mp4" },
     { id: 7, en: { title: "Deep Sea Fishing", desc: "Fishing on the 'Oso Goloso' boat.", cat: "Sport" }, es: { title: "Pesca de Altura", desc: "Pesca en el bote 'Oso Goloso'.", cat: "Deporte" }, img: "https://www.world-tourism.org/wp-content/uploads/2025/08/kona-hawaii-deep-sea-fishing-experience-on-the-bite-me-4.jpg", video: "Deep Sea Fishing.mp4" },
     { id: 8, en: { title: "Dolphin Encounter", desc: "Interact with dolphins.", cat: "Wildlife" }, es: { title: "Encuentro Delfines", desc: "Interactúa con delfines.", cat: "Vida Silvestre" }, img: "https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80", video: "Dolphin Encounter.mp4" },
-    { id: 9, en: { title: "Zipline / Canopy", desc: "Fly over the jungle.", cat: "Adventure" }, es: { title: "Zipline / Canopy", desc: "Vuela sobre la selva.", cat: "Aventura" }, img: "https://res.cloudinary.com/hfyvkoyi1/image/upload/c_fill,g_custom,h_1280/f_auto/c_fill,g_custom,h_1280/f_auto/v1643001792/ranrvd5dwkm05dhf4k5h.jpg", video: "https://youtu.be/86S5cepM5tY?si=0B89zycyj9yoLr4v" },
-    { id: 10, en: { title: "Banana Boat", desc: "Group fun on the water.", cat: "Family" }, es: { title: "Banana Boat", desc: "Diversión grupal en el agua.", cat: "Familia" }, img: "https://tse2.mm.bing.net/th/id/OIP.pVMi_jlUaTHtiNcxf2y9QAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 11, en: { title: "Little French Key", desc: "Transport, day pass and animal park.", cat: "VIP" }, es: { title: "Little French Key", desc: "Transporte, day pass y parque de animales.", cat: "VIP" }, img: "https://tse2.mm.bing.net/th/id/OIP.NVP2ISrzM1BHgrvtECA5rAHaEK?rs=1&amp;pid=ImgDetMain&amp;o=7&amp;rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 12, en: { title: "Snorkeling Tour", desc: "Exploring the best reef spots.", cat: "Marine" }, es: { title: "Tour de Snorkel", desc: "Explorando los mejores puntos del arrecife.", cat: "Marino" }, img: "https://th.bing.com/th/id/R.3c0b63b6928dbdc2675f969d7645de41?rik=RLwKHynq1jXDjg&riu=http%3a%2f%2fwww.shoreexcursionsgroup.com%2fimg%2ftour%2fCAROSUBSNOKAY-2.jpg&ehk=pewPa0rgE8kgQSl1D2CbGYynnbm5ilId087klen7ZTE%3d&risl=&pid=ImgRaw&r=0", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 13, en: { title: "Snorkeling Combo", desc: "2.5 hours, 2 snorkel spots.", cat: "Marine" }, es: { title: "Combo Snorkel", desc: "2.5 horas, 2 puntos de snorkel.", cat: "Marino" }, img: "https://tse1.mm.bing.net/th/id/OIP.R0q30GKC-sahy1FBA7Z47gHaEH?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 14, en: { title: "Parasailing", desc: "Soar at 800 ft line height.", cat: "Sky" }, es: { title: "Parasailing", desc: "Vuela a 800 pies de altura.", cat: "Cielo" }, img: "https://agenciavivatravel.com/wp-content/uploads/2022/07/Parasailing.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 15, en: { title: "Horseback Riding", desc: "Guided ride through beach.", cat: "Nature" }, es: { title: "Cabalgata", desc: "Paseo guiado por la playa.", cat: "Naturaleza" }, img: "https://tse1.explicit.bing.net/th/id/OIP.cQBjEgERNlnAD1ODXeL4LwHaE6?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 16, en: { title: "Glass Boat Combo", desc: "Snorkel and Glass Bottom boat.", cat: "Family" }, es: { title: "Combo Fondo Cristal", desc: "Snorkel y tour en Bote.", cat: "Familia" }, img: "https://tse2.mm.bing.net/th/id/OIP.uOInQNUbaoL5n-yDWAjsrwHaFj?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 17, en: { title: "Island Tour", desc: "Includes Mangrove or Iguana Farm.", cat: "Culture" }, es: { title: "Tour de la Isla", desc: "Incluye Manglares o Iguanas.", cat: "Cultura" }, img: "https://tse3.mm.bing.net/th/id/OIP.85QnYap7UtNZlk5p1r-W8QAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 18, en: { title: "Animal Park", desc: "See sloths and monkeys.", cat: "Wildlife" }, es: { title: "Parque Animal", desc: "Mira perezosos y monos.", cat: "Vida Silvestre" }, img: "https://media.rezgo.com/34676/362239/347253.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 19, en: { title: "Palmetto Bay Trip", desc: "3 Snorkel stops (Shipwreck).", cat: "Luxury" }, es: { title: "Viaje Palmetto Bay", desc: "3 paradas de snorkel.", cat: "Lujo" }, img: "https://i.ytimg.com/vi/e9xQSAE5f7w/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFYgZShHMA8=&rs=AOn4CLC8hAyqvLxPF3548QCnpb30DoibeA", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 20, en: { title: "Pigeon Cay", desc: "All Inclusive island hopping.", cat: "Exotic" }, es: { title: "Pigeon Cay", desc: "Todo incluido. Visita islas.", cat: "Exótico" }, img: "https://tse3.mm.bing.net/th/id/OIP.8ZlWJhzykmZDUVEuIi8DOAHaFj?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 21, en: { title: "Flat Fishing", desc: "Expert fishing for Bonefish.", cat: "Sport" }, es: { title: "Pesca en Planicie", desc: "Pesca experta de Macabí.", cat: "Deporte" }, img: "https://tse3.mm.bing.net/th/id/OIP.e0n6vqAQSlIfUeYFOq57WwHaE7?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 22, en: { title: "Quads / ATV", desc: "2.5 hours of off-road fun.", cat: "Adrenaline" }, es: { title: "Cuatrimotos / ATV", desc: "2.5 horas de diversión off-road.", cat: "Adrenalina" }, img: "https://static.wixstatic.com/media/479630_3b956481cb2147adb3bd82f9436ce694~mv2.jpg/v1/fill/w_1100,h_733,al_c/479630_3b956481cb2147adb3bd82f9436ce694~mv2.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 23, en: { title: "Monoloco Cruise", desc: "Exclusive tour and relaxation.", cat: "Luxury" }, es: { title: "Crucero Monoloco", desc: "Tour exclusivo y relajación.", cat: "Lujo" }, img: "https://tse1.mm.bing.net/th/id/OIP.OGWPx8RoC1MKwxOLhQ1W0wAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 24, en: { title: "Cayos Cochinos", desc: "All Inclusive expedition.", cat: "Exotic" }, es: { title: "Cayos Cochinos", desc: "Expedición Todo Incluido.", cat: "Exótico" }, img: "https://diarioroatan.com/wp-content/uploads/2018/05/cayos-cochinos-beach.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 25, en: { title: "Kayak / Paddle", desc: "Rentals available.", cat: "Sports" }, es: { title: "Kayak / Paddle", desc: "Renta disponible.", cat: "Deportes" }, img: "https://grandroatanresortandspa.com/images/feature/rtbgr-clear-bottom-kayak-2f4ab17b.jpg", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 26, en: { title: "Mangrove Tour", desc: "Car and boat trip through tunnels.", cat: "Nature" }, es: { title: "Tour de Manglares", desc: "Viaje por túneles de manglar.", cat: "Naturaleza" }, img: "https://tse1.mm.bing.net/th/id/OIP.i5XGv2glu5Ta6hcZeACzVAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 27, en: { title: "Punta Gorda Tour", desc: "Garifuna heritage experience.", cat: "Culture" }, es: { title: "Punta Gorda Tour", desc: "Herencia Garífuna.", cat: "Cultura" }, img: "https://tse4.mm.bing.net/th/id/OIP._lVSeJr65_AkOt8f6Zj2EwHaEk?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" },
-    { id: 28, en: { title: "Flyboard", desc: "Fly over the sea.", cat: "Adrenaline" }, es: { title: "Flyboard", desc: "Vuela sobre el mar.", cat: "Adrenalina" }, img: "https://tse1.mm.bing.net/th/id/OIP.LjVmlsfHfnCmsbCY96VOVwHaEX?rs=1&pid=ImgDetMain&o=7&rm=3", video: "TU_VIDEO_AQUI.mp4" }
+    { id: 9, en: { title: "Zipline / Canopy", desc: "Fly over the jungle.", cat: "Adventure" }, es: { title: "Zipline / Canopy", desc: "Vuela sobre la selva.", cat: "Aventura" }, img: "https://res.cloudinary.com/hfyvkoyi1/image/upload/c_fill,g_custom,h_1280/f_auto/c_fill,g_custom,h_1280/f_auto/v1643001792/ranrvd5dwkm05dhf4k5h.jpg", video: "Zipline.mp4" },
+    { id: 10, en: { title: "Banana Boat", desc: "Group fun on the water.", cat: "Family" }, es: { title: "Banana Boat", desc: "Diversión grupal en el agua.", cat: "Familia" }, img: "https://tse2.mm.bing.net/th/id/OIP.pVMi_jlUaTHtiNcxf2y9QAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Banana.mp4" },
+    { id: 11, en: { title: "Little French Key", desc: "Transport, day pass and animal park.", cat: "VIP" }, es: { title: "Little French Key", desc: "Transporte, day pass y parque de animales.", cat: "VIP" }, img: "https://tse2.mm.bing.net/th/id/OIP.NVP2ISrzM1BHgrvtECA5rAHaEK?rs=1&amp;pid=ImgDetMain&amp;o=7&amp;rm=3", video: "LFK.mp4" },
+    { id: 12, en: { title: "Snorkeling Tour", desc: "Exploring the best reef spots.", cat: "Marine" }, es: { title: "Tour de Snorkel", desc: "Explorando los mejores puntos del arrecife.", cat: "Marino" }, img: "https://th.bing.com/th/id/R.3c0b63b6928dbdc2675f969d7645de41?rik=RLwKHynq1jXDjg&riu=http%3a%2f%2fwww.shoreexcursionsgroup.com%2fimg%2ftour%2fCAROSUBSNOKAY-2.jpg&ehk=pewPa0rgE8kgQSl1D2CbGYynnbm5ilId087klen7ZTE%3d&risl=&pid=ImgRaw&r=0", video: "Snorkel.mp4" },
+    { id: 13, en: { title: "Snorkeling Combo", desc: "2.5 hours, 2 snorkel spots.", cat: "Marine" }, es: { title: "Combo Snorkel", desc: "2.5 horas, 2 puntos de snorkel.", cat: "Marino" }, img: "https://tse1.mm.bing.net/th/id/OIP.R0q30GKC-sahy1FBA7Z47gHaEH?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Combo.mp4" },
+    { id: 14, en: { title: "Parasailing", desc: "Soar at 800 ft line height.", cat: "Sky" }, es: { title: "Parasailing", desc: "Vuela a 800 pies de altura.", cat: "Cielo" }, img: "https://agenciavivatravel.com/wp-content/uploads/2022/07/Parasailing.jpg", video: "Parasailing.mp4" },
+    { id: 15, en: { title: "Horseback Riding", desc: "Guided ride through beach.", cat: "Nature" }, es: { title: "Cabalgata", desc: "Paseo guiado por la playa.", cat: "Naturaleza" }, img: "https://tse1.explicit.bing.net/th/id/OIP.cQBjEgERNlnAD1ODXeL4LwHaE6?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Horse.mp4" },
+    { id: 16, en: { title: "Glass Boat Combo", desc: "Snorkel and Glass Bottom boat.", cat: "Family" }, es: { title: "Combo Fondo Cristal", desc: "Snorkel y tour en Bote.", cat: "Familia" }, img: "https://tse2.mm.bing.net/th/id/OIP.uOInQNUbaoL5n-yDWAjsrwHaFj?rs=1&pid=ImgDetMain&o=7&rm=3", video: "GlassCombo.mp4" },
+    { id: 17, en: { title: "Island Tour", desc: "Includes Mangrove or Iguana Farm.", cat: "Culture" }, es: { title: "Tour de la Isla", desc: "Incluye Manglares o Iguanas.", cat: "Cultura" }, img: "https://tse3.mm.bing.net/th/id/OIP.85QnYap7UtNZlk5p1r-W8QAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Island.mp4" },
+    { id: 18, en: { title: "Animal Park", desc: "See sloths and monkeys.", cat: "Wildlife" }, es: { title: "Parque Animal", desc: "Mira perezosos y monos.", cat: "Vida Silvestre" }, img: "https://media.rezgo.com/34676/362239/347253.jpg", video: "Animals.mp4" },
+    { id: 19, en: { title: "Palmetto Bay Trip", desc: "3 Snorkel stops (Shipwreck).", cat: "Luxury" }, es: { title: "Viaje Palmetto Bay", desc: "3 paradas de snorkel.", cat: "Lujo" }, img: "https://i.ytimg.com/vi/e9xQSAE5f7w/maxresdefault.jpg?sqp=-oaymwEmCIAKENAF8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFYgZShHMA8=&rs=AOn4CLC8hAyqvLxPF3548QCnpb30DoibeA", video: "Palmetto.mp4" },
+    { id: 20, en: { title: "Pigeon Cay", desc: "All Inclusive island hopping.", cat: "Exotic" }, es: { title: "Pigeon Cay", desc: "Todo incluido. Visita islas.", cat: "Exótico" }, img: "https://tse3.mm.bing.net/th/id/OIP.8ZlWJhzykmZDUVEuIi8DOAHaFj?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Pigeon.mp4" },
+    { id: 21, en: { title: "Flat Fishing", desc: "Expert fishing for Bonefish.", cat: "Sport" }, es: { title: "Pesca en Planicie", desc: "Pesca experta de Macabí.", cat: "Deporte" }, img: "https://tse3.mm.bing.net/th/id/OIP.e0n6vqAQSlIfUeYFOq57WwHaE7?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Fishing.mp4" },
+    { id: 22, en: { title: "Quads / ATV", desc: "2.5 hours of off-road fun.", cat: "Adrenaline" }, es: { title: "Cuatrimotos / ATV", desc: "2.5 horas de diversión off-road.", cat: "Adrenalina" }, img: "https://static.wixstatic.com/media/479630_3b956481cb2147adb3bd82f9436ce694~mv2.jpg/v1/fill/w_1100,h_733,al_c/479630_3b956481cb2147adb3bd82f9436ce694~mv2.jpg", video: "ATV.mp4" },
+    { id: 23, en: { title: "Monoloco Cruise", desc: "Exclusive tour and relaxation.", cat: "Luxury" }, es: { title: "Crucero Monoloco", desc: "Tour exclusivo y relajación.", cat: "Lujo" }, img: "https://tse1.mm.bing.net/th/id/OIP.OGWPx8RoC1MKwxOLhQ1W0wAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Monoloco.mp4" },
+    { id: 24, en: { title: "Cayos Cochinos", desc: "All Inclusive expedition.", cat: "Exotic" }, es: { title: "Cayos Cochinos", desc: "Expedición Todo Incluido.", cat: "Exótico" }, img: "https://diarioroatan.com/wp-content/uploads/2018/05/cayos-cochinos-beach.jpg", video: "Cayos.mp4" },
+    { id: 25, en: { title: "Kayak / Paddle", desc: "Rentals available.", cat: "Sports" }, es: { title: "Kayak / Paddle", desc: "Renta disponible.", cat: "Deportes" }, img: "https://grandroatanresortandspa.com/images/feature/rtbgr-clear-bottom-kayak-2f4ab17b.jpg", video: "Kayak.mp4" },
+    { id: 26, en: { title: "Mangrove Tour", desc: "Car and boat trip through tunnels.", cat: "Nature" }, es: { title: "Tour de Manglares", desc: "Viaje por túneles de manglar.", cat: "Naturaleza" }, img: "https://tse1.mm.bing.net/th/id/OIP.i5XGv2glu5Ta6hcZeACzVAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Mangrove.mp4" },
+    { id: 27, en: { title: "Punta Gorda Tour", desc: "Garifuna heritage experience.", cat: "Culture" }, es: { title: "Punta Gorda Tour", desc: "Herencia Garífuna.", cat: "Cultura" }, img: "https://tse4.mm.bing.net/th/id/OIP._lVSeJr65_AkOt8f6Zj2EwHaEk?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Punta.mp4" },
+    { id: 28, en: { title: "Flyboard", desc: "Fly over the sea.", cat: "Adrenaline" }, es: { title: "Flyboard", desc: "Vuela sobre el mar.", cat: "Adrenalina" }, img: "https://tse1.mm.bing.net/th/id/OIP.LjVmlsfHfnCmsbCY96VOVwHaEX?rs=1&pid=ImgDetMain&o=7&rm=3", video: "Flyboard.mp4" }
   ];
 
   const translations = {
-    en: { hero: "Experience<br>Roatán", secBadge: "Full Catalog 2025", secTitle: "Our Activities", btn: "Check Availability", footer: "West Bay Beach, Roatán, Honduras.", waMsg: "Hi! I am interested in " },
-    es: { hero: "Vive<br>Roatán", secBadge: "Catálogo Completo 2025", secTitle: "Nuestras Actividades", btn: "Consultar Disponibilidad", footer: "Playa West Bay, Roatán, Honduras.", waMsg: "¡Hola! Estoy interesado en " }
+    en: { hero: "Experience<br>Roatán", secBadge: "Full Catalog 2025", secTitle: "Our Activities", btn: "Check Availability", footer: "West Bay Beach, Honduras.", waMsg: "Hi! I am interested in " },
+    es: { hero: "Vive<br>Roatán", secBadge: "Catálogo Completo 2025", secTitle: "Nuestras Actividades", btn: "Consultar Disponibilidad", footer: "Playa West Bay, Honduras.", waMsg: "¡Hola! Estoy interesado en " }
   };
 
   function render() {
@@ -222,16 +216,18 @@
       const langData = item[currentLang];
       const card = document.createElement('div');
       card.className = 'card';
+      card.dataset.id = item.id;
       
-      // Control de video al pasar el mouse o tocar en móvil
-      card.onmouseenter = () => playVideo(card);
-      card.onmouseleave = () => stopVideo(card);
-      card.ontouchstart = () => playVideo(card);
+      // En PC funciona con Clic. En móvil el Observer hace el trabajo.
+      card.onclick = (e) => {
+          if (e.target.closest('.btn-wa')) return;
+          toggleVideo(card);
+      };
 
       card.innerHTML = `
         <div class="card-img">
           <img src="${item.img}" alt="${langData.title}">
-          <video class="card-video" loop playsinline>
+          <video class="card-video" loop playsinline muted>
             <source src="${item.video}" type="video/mp4">
           </video>
         </div>
@@ -240,7 +236,7 @@
           <h3>${langData.title}</h3>
           <p>${langData.desc}</p>
           <div class="card-footer">
-            <a href="#" class="btn-wa" onclick="sendWa('${langData.title}')">
+            <a href="#" class="btn-wa" onclick="sendWa('${langData.title}', event)">
               ${translations[currentLang].btn}
               <i data-lucide="chevron-right" size="16"></i>
             </a>
@@ -250,29 +246,71 @@
       grid.appendChild(card);
     });
     lucide.createIcons();
+    setupMobileObserver();
+  }
+
+  // --- LÓGICA DE VIDEO ---
+  function toggleVideo(card) {
+      const isPlaying = card.classList.contains('playing');
+      stopAllVideos();
+      if (!isPlaying) playVideo(card);
   }
 
   function playVideo(card) {
-    const video = card.querySelector('.card-video');
-    if(video) {
-        card.classList.add('playing');
-        video.play().catch(e => console.log("Se requiere interacción para audio"));
-    }
+      const video = card.querySelector('.card-video');
+      if(video) {
+          card.classList.add('playing');
+          video.muted = false; // Activar sonido al interactuar
+          video.play().catch(() => {
+              video.muted = true; // Fallback si el navegador bloquea audio
+              video.play();
+          });
+      }
   }
 
   function stopVideo(card) {
-    const video = card.querySelector('.card-video');
-    if(video) {
-        card.classList.remove('playing');
-        video.pause();
-        video.currentTime = 0;
-    }
+      const video = card.querySelector('.card-video');
+      if(video) {
+          card.classList.remove('playing');
+          video.pause();
+          video.currentTime = 0;
+      }
   }
 
-  function setLang(lang) {
+  function stopAllVideos() {
+      document.querySelectorAll('.card').forEach(c => stopVideo(c));
+  }
+
+  // --- LÓGICA MÓVIL (TIPO REELS) ---
+  function setupMobileObserver() {
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) return;
+
+      const options = {
+          root: null,
+          threshold: 0.7 // El video debe estar al 70% visible para reproducirse
+      };
+
+      if (observer) observer.disconnect();
+
+      observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  playVideo(entry.target);
+              } else {
+                  stopVideo(entry.target);
+              }
+          });
+      }, options);
+
+      document.querySelectorAll('.card').forEach(card => observer.observe(card));
+  }
+
+  // --- OTROS ---
+  function setLang(lang, event) {
     currentLang = lang;
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    if(window.event) window.event.target.classList.add('active');
+    event.target.classList.add('active');
     document.getElementById('hero-title').innerHTML = translations[lang].hero;
     document.getElementById('sec-badge').innerText = translations[lang].secBadge;
     document.getElementById('sec-title').innerText = translations[lang].secTitle;
@@ -280,13 +318,16 @@
     render();
   }
 
-  function sendWa(name) {
+  function sendWa(name, event) {
+    event.stopPropagation();
     const phone = "50492448041";
     const msg = encodeURIComponent(translations[currentLang].waMsg + name);
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
   }
 
+  window.addEventListener('resize', setupMobileObserver);
   render();
 </script>
 </body>
+</html>
 </html>
